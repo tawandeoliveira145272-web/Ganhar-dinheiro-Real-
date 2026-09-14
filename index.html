@@ -156,6 +156,47 @@
     .loading-text { margin-top: 20px; font-size: 18px; color: white; }
     
     .login-hint { font-size: 13px; text-align: center; margin-top: 5px; opacity: 0.8; }
+    
+    /* CONVITE */
+    .convite-card { 
+        background: linear-gradient(135deg, #FFD700, #FFA500); 
+        color: #333; 
+        padding: 20px; 
+        border-radius: 16px; 
+        margin: 15px 0;
+        text-align: center;
+    }
+    .convite-codigo {
+        font-size: 36px;
+        font-weight: bold;
+        letter-spacing: 5px;
+        margin: 15px 0;
+        padding: 15px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 10px;
+        font-family: monospace;
+    }
+    .convite-stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 15px 0;
+    }
+    .convite-stat {
+        background: rgba(255,255,255,0.2);
+        padding: 10px;
+        border-radius: 10px;
+        flex: 1;
+        margin: 0 5px;
+    }
+    .convite-stat .numero {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+    }
+    .convite-stat .label {
+        font-size: 12px;
+        opacity: 0.9;
+    }
 </style>
 </head>
 <body>
@@ -171,15 +212,15 @@
 
 <!-- LOGIN -->
 <div id="screen-login" class="screen active">
-    <h1> Pega Moedas</h1>
+    <h1>💰 Pega Moedas</h1>
     <div class="card">
-        <h2> Entrar</h2>
+        <h2>🔐 Entrar</h2>
         <input type="text" id="login-cpf" placeholder="CPF ou E-mail" inputmode="text">
         <p class="login-hint"> Digite seu CPF ou E-mail cadastrado</p>
         <input type="password" id="login-senha" placeholder="Senha">
         <div class="error" id="login-error"></div>
         <button onclick="fazerLogin()">Entrar</button>
-        <button class="btn-secondary" onclick="mostrar('screen-cadastro')">📝 Criar conta</button>
+        <button class="btn-secondary" onclick="mostrar('screen-cadastro')"> Criar conta</button>
     </div>
 </div>
 
@@ -187,8 +228,8 @@
 <div id="screen-cadastro" class="screen">
     <h1>📝 Criar Conta</h1>
     <div class="card" style="background: linear-gradient(135deg, #ff6b6b, #ee5a6f);">
-        <h2>🎁 Bônus!</h2>
-        <p style="text-align:center; font-size:18px;">Ganhe <strong>1.000 moedas</strong> + <strong>R$ 0,50</strong>!</p>
+        <h2>🎁 Bônus de Boas-Vindas!</h2>
+        <p style="text-align:center; font-size:18px;">Ganhe <strong>400 moedas</strong> + <strong>R$ 0,20</strong>!</p>
     </div>
     <div class="card">
         <input type="text" id="cad-nome" placeholder="Nome completo">
@@ -196,6 +237,7 @@
         <input type="email" id="cad-email" placeholder="E-mail">
         <input type="password" id="cad-senha" placeholder="Senha (mín. 6)">
         <input type="password" id="cad-senha2" placeholder="Confirmar senha">
+        <input type="text" id="cad-codigo-convite" placeholder="Código de convite (opcional - 6 dígitos)" maxlength="6" style="text-transform: uppercase;">
         <div class="error" id="cad-error"></div>
         <button onclick="criarConta()">Cadastrar</button>
         <button class="btn-secondary" onclick="mostrar('screen-login')">← Voltar</button>
@@ -205,7 +247,7 @@
 <!-- HOME -->
 <div id="screen-home" class="screen">
     <div class="user-info">
-         Olá, <strong id="user-nome"></strong>!<br><small id="user-email"></small>
+        👋 Olá, <strong id="user-nome"></strong>!<br><small id="user-email"></small>
     </div>
     
     <div class="wallet-header">
@@ -231,7 +273,7 @@
                 <p>Pegue moedas caindo</p>
             </div>
             <div class="game-card" onclick="iniciarJogo('fazendinha')">
-                <div class="game-icon"></div>
+                <div class="game-icon">🐄</div>
                 <h3>Fazendinha</h3>
                 <p>Cuide da vaca</p>
             </div>
@@ -248,12 +290,12 @@
         </div>
     </div>
     
-    <button class="btn-danger" onclick="logout()">🚪 Sair</button>
+    <button class="btn-danger" onclick="logout()"> Sair</button>
 </div>
 
 <!-- FEED PÚBLICO -->
 <div id="screen-feed" class="screen">
-    <h1>📢 Feed de Saques</h1>
+    <h1> Feed de Saques</h1>
     <div class="feed-header">
         <h2>🎉 Comprovantes Aprovados</h2>
         <p>Veja quem já sacou e ganhou!</p>
@@ -283,8 +325,37 @@
         </div>
     </div>
     
+    <!-- CARTÃO DE CONVITE -->
+    <div class="convite-card">
+        <h3 style="color: #333; margin-bottom: 10px;">🎁 Seu Código de Convite</h3>
+        <div class="convite-codigo" id="meu-codigo-convite">CARREGANDO...</div>
+        <p style="font-size: 14px; margin-bottom: 15px;">
+            Compartilhe com amigos! Eles ganham 500 moedas e você também quando fizerem o primeiro saque!
+        </p>
+        <div class="convite-stats">
+            <div class="convite-stat">
+                <div class="numero" id="stat-convidados">0</div>
+                <div class="label">Convidados</div>
+            </div>
+            <div class="convite-stat">
+                <div class="numero" id="stat-validos">0</div>
+                <div class="label">Convites Válidos</div>
+            </div>
+        </div>
+        <button onclick="copiarMeuCodigo()" style="background: #333; color: white; margin-top: 10px;">
+            📋 Copiar Código
+        </button>
+        <button onclick="compartilharCodigo()" class="btn-success" style="margin-top: 10px;">
+            📱 Compartilhar
+        </button>
+    </div>
+    
+    <button class="btn-success" onclick="abrirModalResgatarCodigo()" style="margin: 15px 0;">
+         Resgatar Código de Convite
+    </button>
+    
     <button class="btn-publicar" onclick="abrirModalPublicar()">
-        📸 Publicar Comprovante (Grátis - Ganhe 500 moedas se aprovado)
+         Publicar Comprovante (Grátis - Ganhe 500 moedas se aprovado)
     </button>
     
     <h2>📋 Minhas Publicações</h2>
@@ -317,7 +388,7 @@
 <div id="screen-fazendinha" class="screen">
     <div class="game-header">
         <button class="btn-secondary" style="width:auto; padding:8px 15px;" onclick="voltarHome()">← Voltar</button>
-        <h3 style="margin:0;"> Fazendinha</h3>
+        <h3 style="margin:0;">🐄 Fazendinha</h3>
         <div style="width:80px;"></div>
     </div>
     
@@ -335,7 +406,7 @@
     
     <div class="farm-stats">
         <div class="farm-stat">
-            <div class="icon">💧</div>
+            <div class="icon"></div>
             <div class="value" id="stat-agua">0</div>
             <div class="label">Água</div>
         </div>
@@ -433,6 +504,22 @@
     </div>
 </div>
 
+<!-- MODAL RESGATAR CÓDIGO -->
+<div id="modal-resgatar-codigo" class="modal">
+    <div class="modal-content">
+        <h2>🎁 Resgatar Código</h2>
+        <p style="margin: 15px 0;">Digite o código de 6 dígitos que seu amigo te enviou:</p>
+        <input type="text" id="resgatar-codigo-input" 
+               placeholder="Ex: A7K9M2" 
+               maxlength="6" 
+               style="text-transform: uppercase; text-align: center; font-size: 24px; letter-spacing: 3px;">
+        <div class="error" id="resgatar-error"></div>
+        <div class="success" id="resgatar-success"></div>
+        <button onclick="resgatarCodigo()">Resgatar</button>
+        <button class="btn-secondary" onclick="fecharModal('modal-resgatar-codigo')">Cancelar</button>
+    </div>
+</div>
+
 <!-- MODAL PUBLICAR -->
 <div id="modal-publicar" class="modal">
     <div class="modal-content">
@@ -465,6 +552,10 @@ const database = firebase.database();
 
 // CONFIG
 const MOEDAS_POR_REAL = 1500;
+const BONUS_INICIAL_MOEDAS = 400; // Alterado de 1000 para 400
+const BONUS_INICIAL_REAL = 0.20; // Alterado de 0.50 para 0.20
+const BONUS_CONVITE = 500;
+
 let usuarioAtual = null;
 let jogoAtual = null;
 let gameLoop = null;
@@ -478,7 +569,7 @@ database.ref('.info/connected').on('value', snap => {
     document.getElementById('sync-status').className = 'sync-status ' + (snap.val() ? 'online' : 'offline');
 });
 
-// ============ SESSÃO PERSISTENTE ============
+// SESSÃO PERSISTENTE
 function salvarSessao(userId) {
     localStorage.setItem('pegaMoedas_sessao', userId);
 }
@@ -534,11 +625,6 @@ function validarCPF(cpf) {
     return resto === parseInt(cpf[10]);
 }
 
-function validarEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-// Detectar se o input é CPF ou E-mail
 function detectarTipoLogin(input) {
     input = input.trim();
     if (input.includes('@')) return 'email';
@@ -578,6 +664,16 @@ function fecharModal(id) {
     document.getElementById('file-input').value = '';
 }
 
+// GERAR CÓDIGO ÚNICO
+function gerarCodigoConvite() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let codigo = '';
+    for (let i = 0; i < 6; i++) {
+        codigo += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return codigo;
+}
+
 // CADASTRO
 async function criarConta() {
     const nome = document.getElementById('cad-nome').value.trim();
@@ -585,29 +681,70 @@ async function criarConta() {
     const email = document.getElementById('cad-email').value.trim().toLowerCase();
     const senha = document.getElementById('cad-senha').value;
     const senha2 = document.getElementById('cad-senha2').value;
+    const codigoConviteInput = document.getElementById('cad-codigo-convite').value.trim().toUpperCase();
     const err = document.getElementById('cad-error');
     err.textContent = '';
 
     if (!nome || nome.split(' ').length < 2) return err.textContent = '❌ Nome completo necessário';
-    if (!validarCPF(cpf)) return err.textContent = ' CPF inválido';
-    if (!validarEmail(email)) return err.textContent = '❌ E-mail inválido';
-    if (senha.length < 6) return err.textContent = '❌ Senha mínima: 6 caracteres';
-    if (senha !== senha2) return err.textContent = '❌ Senhas diferentes';
+    if (!validarCPF(cpf)) return err.textContent = '❌ CPF inválido';
+    if (!email.includes('@')) return err.textContent = '❌ E-mail inválido';
+    if (senha.length < 6) return err.textContent = ' Senha mínima: 6 caracteres';
+    if (senha !== senha2) return err.textContent = ' Senhas diferentes';
 
     const snapshotCPF = await database.ref('usuarios').orderByChild('cpf').equalTo(cpf).once('value');
-    if (snapshotCPF.exists()) return err.textContent = '❌ CPF já cadastrado';
+    if (snapshotCPF.exists()) return err.textContent = ' CPF já cadastrado';
 
     const snapshotEmail = await database.ref('usuarios').orderByChild('email').equalTo(email).once('value');
     if (snapshotEmail.exists()) return err.textContent = '❌ E-mail já cadastrado';
 
+    // Verificar código de convite
+    let convidadoPor = null;
+    let bonusConvite = 0;
+    
+    if (codigoConviteInput) {
+        const snapConvite = await database.ref('usuarios')
+            .orderByChild('codigoConvite')
+            .equalTo(codigoConviteInput)
+            .once('value');
+        
+        if (snapConvite.exists()) {
+            let codigoValido = false;
+            snapConvite.forEach(child => {
+                const user = child.val();
+                // Verificar se código ainda não foi usado
+                if (!user.codigoUsadoEm) {
+                    convidadoPor = child.key;
+                    codigoValido = true;
+                }
+            });
+            
+            if (codigoValido) {
+                bonusConvite = BONUS_CONVITE;
+            } else {
+                err.textContent = '❌ Código já utilizado ou inválido';
+                return;
+            }
+        } else {
+            err.textContent = '❌ Código de convite inválido';
+            return;
+        }
+    }
+
     const userId = 'user_' + Date.now();
     const hoje = new Date().toDateString();
+    
     const novoUsuario = {
         nome, cpf, email, senha,
-        moedas: 1000,
-        saldoReal: 0.50,
+        moedas: BONUS_INICIAL_MOEDAS + bonusConvite,
+        saldoReal: BONUS_INICIAL_REAL,
         totalSacado: 0,
         publicacoes: 0,
+        codigoConvite: gerarCodigoConvite(),
+        convidadoPor: convidadoPor,
+        amigosConvidados: [],
+        convitesValidos: 0,
+        codigoUsadoEm: null,
+        primeiroSaqueFeito: false,
         fazendinha: {
             ultimaColeta: Date.now(),
             moedasMineradas: 0,
@@ -628,12 +765,32 @@ async function criarConta() {
     };
     
     await database.ref('usuarios/' + userId).set(novoUsuario);
-    alert('✅ Conta criada! +1000 moedas + R$0,50\n\nFaça login com seu CPF ou E-mail.');
+    
+    // Dar recompensa a quem convidou
+    if (convidadoPor) {
+        const snapConvidador = await database.ref('usuarios/' + convidadoPor).once('value');
+        if (snapConvidador.exists()) {
+            const convidador = snapConvidador.val();
+            const amigosLista = convidador.amigosConvidados || [];
+            amigosLista.push(userId);
+            
+            await database.ref('usuarios/' + convidadoPor).update({
+                amigosConvidados: amigosLista,
+                codigoUsadoEm: Date.now()
+            });
+        }
+    }
+    
+    const msg = bonusConvite > 0 
+        ? `✅ Conta criada! +${BONUS_INICIAL_MOEDAS + bonusConvite} moedas (incluindo bônus de convite!) + R$${BONUS_INICIAL_REAL.toFixed(2)}`
+        : `✅ Conta criada! +${BONUS_INICIAL_MOEDAS} moedas + R$${BONUS_INICIAL_REAL.toFixed(2)}`;
+    
+    alert(msg);
     mostrar('screen-login');
     document.querySelectorAll('#screen-cadastro input').forEach(i => i.value = '');
 }
 
-// LOGIN COM CPF OU E-MAIL
+// LOGIN
 async function fazerLogin() {
     const input = document.getElementById('login-cpf').value.trim();
     const senha = document.getElementById('login-senha').value;
@@ -648,13 +805,11 @@ async function fazerLogin() {
     let campoBusca;
     
     if (tipo === 'cpf') {
-        // Buscar por CPF
         const cpfNumeros = input.replace(/\D/g, '');
         if (!validarCPF(cpfNumeros)) return err.textContent = '❌ CPF inválido';
         snapshot = await database.ref('usuarios').orderByChild('cpf').equalTo(cpfNumeros).once('value');
         campoBusca = 'CPF';
     } else if (tipo === 'email') {
-        // Buscar por E-mail
         const emailLower = input.toLowerCase();
         snapshot = await database.ref('usuarios').orderByChild('email').equalTo(emailLower).once('value');
         campoBusca = 'E-mail';
@@ -674,7 +829,6 @@ async function fazerLogin() {
 
     if (!userFound) return err.textContent = '❌ Senha incorreta';
 
-    // SALVAR SESSÃO
     salvarSessao(userId);
     
     usuarioAtual = { ...userFound, id: userId };
@@ -726,6 +880,17 @@ async function atualizarPerfil() {
     document.getElementById('perfil-total-saque').textContent = `R$ ${usuarioAtual.totalSacado.toFixed(2).replace('.', ',')}`;
     document.getElementById('perfil-publicacoes').textContent = usuarioAtual.publicacoes || 0;
     
+    // Atualizar código de convite e estatísticas
+    if (usuarioAtual.codigoConvite) {
+        document.getElementById('meu-codigo-convite').textContent = usuarioAtual.codigoConvite;
+    }
+    
+    const amigosConvidados = usuarioAtual.amigosConvidados || [];
+    const convitesValidos = usuarioAtual.convitesValidos || 0;
+    
+    document.getElementById('stat-convidados').textContent = amigosConvidados.length;
+    document.getElementById('stat-validos').textContent = convitesValidos;
+    
     const pubsSnap = await database.ref('publicacoes').orderByChild('userId').equalTo(usuarioAtual.id).once('value');
     const div = document.getElementById('lista-publicacoes');
     
@@ -738,7 +903,7 @@ async function atualizarPerfil() {
     pubsSnap.forEach(child => {
         const pub = child.val();
         const statusText = pub.status === 'approved' ? '✅ Aprovada' : 
-                           pub.status === 'rejected' ? ' Recusada' : '⏳ Aguardando';
+                           pub.status === 'rejected' ? '❌ Recusada' : '⏳ Aguardando';
         const statusColor = pub.status === 'approved' ? '#51cf66' : 
                             pub.status === 'rejected' ? '#ff6b6b' : '#ffc107';
         
@@ -760,7 +925,7 @@ async function atualizarPerfil() {
                 <div class="publicacao-status">
                     Status: <strong style="color:${statusColor}">${statusText}</strong>
                 </div>
-                ${pub.status === 'approved' ? '<div class="publicacao-bonus">🎁 +500 moedas recebidas!</div>' : ''}
+                ${pub.status === 'approved' ? '<div class="publicacao-bonus"> +500 moedas recebidas!</div>' : ''}
             </div>
         `;
     });
@@ -831,7 +996,7 @@ function handleImageUpload(event) {
     if (!file) return;
     
     if (!file.type.startsWith('image/')) {
-        alert('❌ Por favor, selecione uma imagem válida (JPG, PNG)');
+        alert(' Por favor, selecione uma imagem válida (JPG, PNG)');
         return;
     }
     
@@ -875,6 +1040,111 @@ async function confirmarConversao() {
     fecharModal('modal-conversao');
     alert(`✅ Convertido: ${moedas} moedas = R$ ${(moedas/MOEDAS_POR_REAL).toFixed(2)}`);
     atualizarTelaHome();
+}
+
+// RESGATAR CÓDIGO
+function abrirModalResgatarCodigo() {
+    document.getElementById('modal-resgatar-codigo').classList.add('active');
+    document.getElementById('resgatar-codigo-input').value = '';
+    document.getElementById('resgatar-error').textContent = '';
+    document.getElementById('resgatar-success').textContent = '';
+}
+
+async function resgatarCodigo() {
+    const codigo = document.getElementById('resgatar-codigo-input').value.trim().toUpperCase();
+    const err = document.getElementById('resgatar-error');
+    const suc = document.getElementById('resgatar-success');
+    
+    err.textContent = '';
+    suc.textContent = '';
+    
+    if (!codigo || codigo.length !== 6) {
+        return err.textContent = '❌ Código deve ter 6 dígitos';
+    }
+    
+    if (usuarioAtual.convidadoPor) {
+        return err.textContent = '❌ Você já usou um código de convite';
+    }
+    
+    const snapConvite = await database.ref('usuarios')
+        .orderByChild('codigoConvite')
+        .equalTo(codigo)
+        .once('value');
+    
+    if (!snapConvite.exists()) {
+        return err.textContent = ' Código inválido';
+    }
+    
+    let convidadorId = null;
+    let codigoValido = false;
+    
+    snapConvite.forEach(child => {
+        const user = child.val();
+        if (!user.codigoUsadoEm) {
+            convidadorId = child.key;
+            codigoValido = true;
+        }
+    });
+    
+    if (!codigoValido) {
+        return err.textContent = '❌ Código expirado ou já utilizado';
+    }
+    
+    usuarioAtual.moedas = (usuarioAtual.moedas || 0) + BONUS_CONVITE;
+    usuarioAtual.convidadoPor = convidadorId;
+    
+    await salvarUsuario();
+    
+    const snapConvidador = await database.ref('usuarios/' + convidadorId).once('value');
+    if (snapConvidador.exists()) {
+        const convidador = snapConvidador.val();
+        const amigosLista = convidador.amigosConvidados || [];
+        amigosLista.push(usuarioAtual.id);
+        
+        await database.ref('usuarios/' + convidadorId).update({
+            amigosConvidados: amigosLista,
+            codigoUsadoEm: Date.now()
+        });
+    }
+    
+    suc.textContent = `✅ Código resgatado! +${BONUS_CONVITE} moedas`;
+    setTimeout(() => {
+        fecharModal('modal-resgatar-codigo');
+        atualizarTelaHome();
+    }, 2000);
+}
+
+// COPIAR E COMPARTILHAR CÓDIGO
+function copiarMeuCodigo() {
+    const codigo = usuarioAtual.codigoConvite;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(codigo).then(() => {
+            alert(`📋 Código copiado: ${codigo}`);
+        });
+    } else {
+        const input = document.createElement('input');
+        input.value = codigo;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert(`📋 Código copiado: ${codigo}`);
+    }
+}
+
+function compartilharCodigo() {
+    const codigo = usuarioAtual.codigoConvite;
+    const texto = `🎮 Baixe o app Pega Moedas e use meu código ${codigo} no cadastro!\n\n🔗 Link: https://sites.google.com/view/ganhardinheiroreal\n\nGanhe 500 moedas de bônus! 💰`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Pega Moedas - Ganhe PIX',
+            text: texto,
+            url: 'https://sites.google.com/view/ganhardinheiroreal'
+        }).catch(() => {});
+    } else {
+        window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+    }
 }
 
 // PUBLICAÇÃO COM IMAGEM
@@ -925,7 +1195,7 @@ async function solicitarSaque() {
     if (!chave) return err.textContent = '❌ Informe chave PIX';
     if (valor < 1) return err.textContent = '❌ Mínimo: R$ 1,00';
     if (valor > 20) return err.textContent = '❌ Máximo: R$ 20,00';
-    if (usuarioAtual.saldoReal < valor) return err.textContent = ` Saldo: R$ ${usuarioAtual.saldoReal.toFixed(2)}`;
+    if (usuarioAtual.saldoReal < valor) return err.textContent = `❌ Saldo: R$ ${usuarioAtual.saldoReal.toFixed(2)}`;
 
     const saque = {
         userId: usuarioAtual.id,
@@ -941,6 +1211,27 @@ async function solicitarSaque() {
     await database.ref('saques/sq_' + Date.now()).set(saque);
     usuarioAtual.saldoReal -= valor;
     usuarioAtual.totalSacado = (usuarioAtual.totalSacado || 0) + valor;
+    
+    // Verificar se é o primeiro saque
+    if (!usuarioAtual.primeiroSaqueFeito) {
+        usuarioAtual.primeiroSaqueFeito = true;
+        
+        // Se veio de convite, dar recompensa ao convidador
+        if (usuarioAtual.convidadoPor) {
+            const snapConvidador = await database.ref('usuarios/' + usuarioAtual.convidadoPor).once('value');
+            if (snapConvidador.exists()) {
+                const convidador = snapConvidador.val();
+                const novasMoedas = (convidador.moedas || 0) + BONUS_CONVITE;
+                const convitesValidos = (convidador.convitesValidos || 0) + 1;
+                
+                await database.ref('usuarios/' + usuarioAtual.convidadoPor).update({
+                    moedas: novasMoedas,
+                    convitesValidos: convitesValidos
+                });
+            }
+        }
+    }
+    
     await salvarUsuario();
     
     document.getElementById('saque-chave').value = '';
@@ -1018,10 +1309,10 @@ function atualizarFazendinha() {
     const cowStatus = document.getElementById('cow-status');
     
     if (fazendinhaData.felicidade > 80) {
-        cowEmoji.textContent = '🐄';
+        cowEmoji.textContent = '';
         cowStatus.textContent = 'Sua vaca está muito feliz!';
     } else if (fazendinhaData.felicidade > 50) {
-        cowEmoji.textContent = '';
+        cowEmoji.textContent = '🐄';
         cowStatus.textContent = 'Sua vaca está bem!';
     } else if (fazendinhaData.felicidade > 20) {
         cowEmoji.textContent = '😐';
@@ -1069,7 +1360,7 @@ function atualizarFazendinha() {
 
 async function coletarMineracao() {
     if (fazendinhaData.moedasMineradas < 450) {
-        return alert('⏳ Aguarde 24 horas para coletar 450 moedas!');
+        return alert(' Aguarde 24 horas para coletar 450 moedas!');
     }
     
     usuarioAtual.moedas += 450;
@@ -1119,7 +1410,7 @@ async function fazerTarefa(tipo) {
             }
             fazendinhaData.capim += 1;
             fazendinhaData.tarefasDiarias[tipoContador]++;
-            mensagem = ' Você coletou 1 capim!';
+            mensagem = '🌿 Você coletou 1 capim!';
             break;
             
         case 'dar-agua':
@@ -1238,7 +1529,7 @@ function iniciarPegaMoedas() {
 function iniciarClicker() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    document.getElementById('game-title').textContent = ' Clicker';
+    document.getElementById('game-title').textContent = '👆 Clicker';
     document.getElementById('game-instructions').textContent = 'Clique o máximo possível!';
     
     let tempo = 10;
@@ -1285,10 +1576,10 @@ function iniciarClicker() {
 function iniciarMemoria() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    document.getElementById('game-title').textContent = '🧠 Memória';
+    document.getElementById('game-title').textContent = ' Memória';
     document.getElementById('game-instructions').textContent = 'Encontre os pares!';
     
-    const emojis = ['🎮','','🎁','🎪'];
+    const emojis = ['🎮','💎','🎁','🎪'];
     let cartas = [];
     let viradas = [];
     let pares = 0;

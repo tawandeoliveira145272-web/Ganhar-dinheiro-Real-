@@ -220,7 +220,7 @@
         <input type="password" id="login-senha" placeholder="Senha">
         <div class="error" id="login-error"></div>
         <button onclick="fazerLogin()">Entrar</button>
-        <button class="btn-secondary" onclick="mostrar('screen-cadastro')"> Criar conta</button>
+        <button class="btn-secondary" onclick="mostrar('screen-cadastro')">📝 Criar conta</button>
     </div>
 </div>
 
@@ -257,11 +257,11 @@
                 <div class="value coins" id="user-coins">0</div>
             </div>
             <div class="wallet-item">
-                <small> Reais</small>
+                <small>💵 Reais</small>
                 <div class="value real" id="user-real">R$ 0,00</div>
             </div>
         </div>
-        <button class="btn-convert" onclick="abrirModalConversao()"> Converter Moedas</button>
+        <button class="btn-convert" onclick="abrirModalConversao()">🔄 Converter Moedas</button>
     </div>
     
     <div class="card">
@@ -273,10 +273,10 @@
                 <p>Pegue moedas caindo</p>
             </div>
             <div class="game-card" onclick="iniciarJogo('fazendinha')">
-                <div class="game-icon">🐄</div>
-                <h3>Fazendinha</h3>
-                <p>Cuide da vaca</p>
-            </div>
+    <div class="game-icon">🐄</div>
+    <h3>Fazendinha</h3>
+    <p>Cuide da vaca</p>
+</div>
             <div class="game-card" onclick="iniciarJogo('clicker')">
                 <div class="game-icon">👆</div>
                 <h3>Clicker</h3>
@@ -290,12 +290,12 @@
         </div>
     </div>
     
-    <button class="btn-danger" onclick="logout()"> Sair</button>
+    <button class="btn-danger" onclick="logout()">🚪 Sair</button>
 </div>
 
 <!-- FEED PÚBLICO -->
 <div id="screen-feed" class="screen">
-    <h1> Feed de Saques</h1>
+    <h1>📢 Feed de Saques</h1>
     <div class="feed-header">
         <h2>🎉 Comprovantes Aprovados</h2>
         <p>Veja quem já sacou e ganhou!</p>
@@ -307,7 +307,7 @@
 
 <!-- PERFIL -->
 <div id="screen-perfil" class="screen">
-    <h1>👤 Meu Perfil</h1>
+    <h1> Meu Perfil</h1>
     
     <div class="profile-header">
         <div class="profile-avatar">👤</div>
@@ -358,7 +358,7 @@
          Publicar Comprovante (Grátis - Ganhe 500 moedas se aprovado)
     </button>
     
-    <h2>📋 Minhas Publicações</h2>
+    <h2> Minhas Publicações</h2>
     <div id="lista-publicacoes">
         <p style="text-align:center; color:#ccc;">Carregando...</p>
     </div>
@@ -366,7 +366,7 @@
 
 <!-- SAQUE -->
 <div id="screen-saque" class="screen">
-    <h1>💸 Sacar via PIX</h1>
+    <h1> Sacar via PIX</h1>
     <div class="card">
         <div style="text-align:center; margin-bottom:20px;">
             <small>Saldo disponível:</small>
@@ -406,12 +406,12 @@
     
     <div class="farm-stats">
         <div class="farm-stat">
-            <div class="icon"></div>
+            <div class="icon">💧</div>
             <div class="value" id="stat-agua">0</div>
             <div class="label">Água</div>
         </div>
         <div class="farm-stat">
-            <div class="icon"></div>
+            <div class="icon">🌿</div>
             <div class="value" id="stat-capim">0</div>
             <div class="label">Capim</div>
         </div>
@@ -552,8 +552,8 @@ const database = firebase.database();
 
 // CONFIG
 const MOEDAS_POR_REAL = 1500;
-const BONUS_INICIAL_MOEDAS = 400; // Alterado de 1000 para 400
-const BONUS_INICIAL_REAL = 0.20; // Alterado de 0.50 para 0.20
+const BONUS_INICIAL_MOEDAS = 400;
+const BONUS_INICIAL_REAL = 0.20;
 const BONUS_CONVITE = 500;
 
 let usuarioAtual = null;
@@ -570,17 +570,9 @@ database.ref('.info/connected').on('value', snap => {
 });
 
 // SESSÃO PERSISTENTE
-function salvarSessao(userId) {
-    localStorage.setItem('pegaMoedas_sessao', userId);
-}
-
-function getSessao() {
-    return localStorage.getItem('pegaMoedas_sessao');
-}
-
-function limparSessao() {
-    localStorage.removeItem('pegaMoedas_sessao');
-}
+function salvarSessao(userId) { localStorage.setItem('pegaMoedas_sessao', userId); }
+function getSessao() { return localStorage.getItem('pegaMoedas_sessao'); }
+function limparSessao() { localStorage.removeItem('pegaMoedas_sessao'); }
 
 async function verificarSessao() {
     const userId = getSessao();
@@ -589,7 +581,6 @@ async function verificarSessao() {
         mostrar('screen-login');
         return;
     }
-    
     try {
         const snap = await database.ref('usuarios/' + userId).once('value');
         if (snap.exists()) {
@@ -605,7 +596,6 @@ async function verificarSessao() {
         console.error('Erro ao verificar sessão:', error);
         mostrar('screen-login');
     }
-    
     document.getElementById('loading-screen').classList.add('hidden');
 }
 
@@ -641,7 +631,6 @@ function mostrar(id) {
 function navegar(tela) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     event.target.closest('.nav-item').classList.add('active');
-    
     if (tela === 'home') { mostrar('screen-home'); atualizarTelaHome(); }
     else if (tela === 'feed') { mostrar('screen-feed'); carregarFeedPublico(); }
     else if (tela === 'perfil') { mostrar('screen-perfil'); atualizarPerfil(); }
@@ -664,7 +653,6 @@ function fecharModal(id) {
     document.getElementById('file-input').value = '';
 }
 
-// GERAR CÓDIGO ÚNICO
 function gerarCodigoConvite() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let codigo = '';
@@ -687,17 +675,16 @@ async function criarConta() {
 
     if (!nome || nome.split(' ').length < 2) return err.textContent = '❌ Nome completo necessário';
     if (!validarCPF(cpf)) return err.textContent = '❌ CPF inválido';
-    if (!email.includes('@')) return err.textContent = '❌ E-mail inválido';
-    if (senha.length < 6) return err.textContent = ' Senha mínima: 6 caracteres';
-    if (senha !== senha2) return err.textContent = ' Senhas diferentes';
+    if (!email.includes('@')) return err.textContent = ' E-mail inválido';
+    if (senha.length < 6) return err.textContent = '❌ Senha mínima: 6 caracteres';
+    if (senha !== senha2) return err.textContent = '❌ Senhas diferentes';
 
     const snapshotCPF = await database.ref('usuarios').orderByChild('cpf').equalTo(cpf).once('value');
-    if (snapshotCPF.exists()) return err.textContent = ' CPF já cadastrado';
+    if (snapshotCPF.exists()) return err.textContent = '❌ CPF já cadastrado';
 
     const snapshotEmail = await database.ref('usuarios').orderByChild('email').equalTo(email).once('value');
     if (snapshotEmail.exists()) return err.textContent = '❌ E-mail já cadastrado';
 
-    // Verificar código de convite
     let convidadoPor = null;
     let bonusConvite = 0;
     
@@ -710,9 +697,7 @@ async function criarConta() {
         if (snapConvite.exists()) {
             let codigoValido = false;
             snapConvite.forEach(child => {
-                const user = child.val();
-                // Verificar se código ainda não foi usado
-                if (!user.codigoUsadoEm) {
+                if (!child.val().codigoUsadoEm) {
                     convidadoPor = child.key;
                     codigoValido = true;
                 }
@@ -721,7 +706,7 @@ async function criarConta() {
             if (codigoValido) {
                 bonusConvite = BONUS_CONVITE;
             } else {
-                err.textContent = '❌ Código já utilizado ou inválido';
+                err.textContent = ' Código já utilizado ou inválido';
                 return;
             }
         } else {
@@ -766,7 +751,6 @@ async function criarConta() {
     
     await database.ref('usuarios/' + userId).set(novoUsuario);
     
-    // Dar recompensa a quem convidou
     if (convidadoPor) {
         const snapConvidador = await database.ref('usuarios/' + convidadoPor).once('value');
         if (snapConvidador.exists()) {
@@ -800,9 +784,7 @@ async function fazerLogin() {
     if (!input || !senha) return err.textContent = '❌ Preencha CPF/E-mail e senha';
 
     const tipo = detectarTipoLogin(input);
-    
-    let snapshot;
-    let campoBusca;
+    let snapshot, campoBusca;
     
     if (tipo === 'cpf') {
         const cpfNumeros = input.replace(/\D/g, '');
@@ -810,8 +792,7 @@ async function fazerLogin() {
         snapshot = await database.ref('usuarios').orderByChild('cpf').equalTo(cpfNumeros).once('value');
         campoBusca = 'CPF';
     } else if (tipo === 'email') {
-        const emailLower = input.toLowerCase();
-        snapshot = await database.ref('usuarios').orderByChild('email').equalTo(emailLower).once('value');
+        snapshot = await database.ref('usuarios').orderByChild('email').equalTo(input.toLowerCase()).once('value');
         campoBusca = 'E-mail';
     } else {
         return err.textContent = '❌ Digite um CPF válido (11 números) ou um E-mail válido';
@@ -830,19 +811,15 @@ async function fazerLogin() {
     if (!userFound) return err.textContent = '❌ Senha incorreta';
 
     salvarSessao(userId);
-    
     usuarioAtual = { ...userFound, id: userId };
     document.getElementById('nav-bottom').style.display = 'flex';
     mostrar('screen-home');
     atualizarTelaHome();
 }
 
-// LOGOUT
 function logout() {
     if (!confirm('Tem certeza que deseja sair?')) return;
-    
     limparSessao();
-    
     usuarioAtual = null;
     document.getElementById('nav-bottom').style.display = 'none';
     document.getElementById('login-cpf').value = '';
@@ -850,7 +827,6 @@ function logout() {
     mostrar('screen-login');
 }
 
-// SALVAR
 async function salvarUsuario() {
     if (!usuarioAtual?.id) return;
     const dados = { ...usuarioAtual };
@@ -858,7 +834,6 @@ async function salvarUsuario() {
     await database.ref('usuarios/' + usuarioAtual.id).update(dados);
 }
 
-// ATUALIZAR TELAS
 async function atualizarTelaHome() {
     if (!usuarioAtual) return;
     const snap = await database.ref('usuarios/' + usuarioAtual.id).once('value');
@@ -880,7 +855,6 @@ async function atualizarPerfil() {
     document.getElementById('perfil-total-saque').textContent = `R$ ${usuarioAtual.totalSacado.toFixed(2).replace('.', ',')}`;
     document.getElementById('perfil-publicacoes').textContent = usuarioAtual.publicacoes || 0;
     
-    // Atualizar código de convite e estatísticas
     if (usuarioAtual.codigoConvite) {
         document.getElementById('meu-codigo-convite').textContent = usuarioAtual.codigoConvite;
     }
@@ -903,7 +877,7 @@ async function atualizarPerfil() {
     pubsSnap.forEach(child => {
         const pub = child.val();
         const statusText = pub.status === 'approved' ? '✅ Aprovada' : 
-                           pub.status === 'rejected' ? '❌ Recusada' : '⏳ Aguardando';
+                           pub.status === 'rejected' ? '❌ Recusada' : ' Aguardando';
         const statusColor = pub.status === 'approved' ? '#51cf66' : 
                             pub.status === 'rejected' ? '#ff6b6b' : '#ffc107';
         
@@ -925,7 +899,7 @@ async function atualizarPerfil() {
                 <div class="publicacao-status">
                     Status: <strong style="color:${statusColor}">${statusText}</strong>
                 </div>
-                ${pub.status === 'approved' ? '<div class="publicacao-bonus"> +500 moedas recebidas!</div>' : ''}
+                ${pub.status === 'approved' ? '<div class="publicacao-bonus">🎁 +500 moedas recebidas!</div>' : ''}
             </div>
         `;
     });
@@ -950,12 +924,11 @@ async function atualizarTelaSaque() {
     let html = '';
     saquesSnap.forEach(child => {
         const s = child.val();
-        html += `<div class="item"><strong>R$ ${s.valor.toFixed(2)}</strong><br>${new Date(s.data).toLocaleString('pt-BR')}<br>Status: ${s.status === 'paid' ? '✅ Pago' : '⏳ Pendente'}</div>`;
+        html += `<div class="item"><strong>R$ ${s.valor.toFixed(2)}</strong><br>${new Date(s.data).toLocaleString('pt-BR')}<br>Status: ${s.status === 'paid' ? '✅ Pago' : ' Pendente'}</div>`;
     });
     div.innerHTML = html;
 }
 
-// FEED PÚBLICO
 async function carregarFeedPublico() {
     const div = document.getElementById('feed-publicacoes');
     div.innerHTML = '<p style="text-align:center; color:#ccc;">Carregando...</p>';
@@ -986,24 +959,14 @@ async function carregarFeedPublico() {
             </div>
         `;
     });
-    
     div.innerHTML = html;
 }
 
-// UPLOAD DE IMAGEM
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-        alert(' Por favor, selecione uma imagem válida (JPG, PNG)');
-        return;
-    }
-    
-    if (file.size > 2 * 1024 * 1024) {
-        alert('❌ Imagem muito grande! Máximo 2MB');
-        return;
-    }
+    if (!file.type.startsWith('image/')) return alert('❌ Por favor, selecione uma imagem válida (JPG, PNG)');
+    if (file.size > 2 * 1024 * 1024) return alert('❌ Imagem muito grande! Máximo 2MB');
     
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -1016,7 +979,6 @@ function handleImageUpload(event) {
     reader.readAsDataURL(file);
 }
 
-// CONVERSÃO
 function abrirModalConversao() {
     document.getElementById('modal-conversao').classList.add('active');
     document.getElementById('convert-amount').value = '';
@@ -1042,7 +1004,6 @@ async function confirmarConversao() {
     atualizarTelaHome();
 }
 
-// RESGATAR CÓDIGO
 function abrirModalResgatarCodigo() {
     document.getElementById('modal-resgatar-codigo').classList.add('active');
     document.getElementById('resgatar-codigo-input').value = '';
@@ -1058,27 +1019,23 @@ async function resgatarCodigo() {
     err.textContent = '';
     suc.textContent = '';
     
-    if (!codigo || codigo.length !== 6) {
-        return err.textContent = '❌ Código deve ter 6 dígitos';
-    }
-    
-    if (usuarioAtual.convidadoPor) {
-        return err.textContent = '❌ Você já usou um código de convite';
-    }
+    if (!codigo || codigo.length !== 6) return err.textContent = '❌ Código deve ter 6 dígitos';
+    if (usuarioAtual.convidadoPor) return err.textContent = '❌ Você já usou um código de convite';
     
     const snapConvite = await database.ref('usuarios')
         .orderByChild('codigoConvite')
         .equalTo(codigo)
         .once('value');
     
-    if (!snapConvite.exists()) {
-        return err.textContent = ' Código inválido';
-    }
+    if (!snapConvite.exists()) return err.textContent = ' Código inválido';
     
     let convidadorId = null;
     let codigoValido = false;
     
     snapConvite.forEach(child => {
+        // 🛡️ CORREÇÃO: Impedir de usar o próprio código
+        if (child.key === usuarioAtual.id) return;
+
         const user = child.val();
         if (!user.codigoUsadoEm) {
             convidadorId = child.key;
@@ -1086,13 +1043,10 @@ async function resgatarCodigo() {
         }
     });
     
-    if (!codigoValido) {
-        return err.textContent = '❌ Código expirado ou já utilizado';
-    }
+    if (!codigoValido) return err.textContent = '❌ Código expirado ou já utilizado';
     
     usuarioAtual.moedas = (usuarioAtual.moedas || 0) + BONUS_CONVITE;
     usuarioAtual.convidadoPor = convidadorId;
-    
     await salvarUsuario();
     
     const snapConvidador = await database.ref('usuarios/' + convidadorId).once('value');
@@ -1114,20 +1068,19 @@ async function resgatarCodigo() {
     }, 2000);
 }
 
-// COPIAR E COMPARTILHAR CÓDIGO
 function copiarMeuCodigo() {
     const codigo = usuarioAtual.codigoConvite;
+    if (!codigo) return alert(' Código ainda não gerado.');
+    
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(codigo).then(() => {
-            alert(`📋 Código copiado: ${codigo}`);
-        });
+        navigator.clipboard.writeText(codigo).then(() => alert(`📋 Código copiado: ${codigo}`));
     } else {
-        const input = document.createElement('input');
-        input.value = codigo;
-        document.body.appendChild(input);
-        input.select();
+        const textArea = document.createElement('textarea');
+        textArea.value = codigo;
+        document.body.appendChild(textArea);
+        textArea.select();
         document.execCommand('copy');
-        document.body.removeChild(input);
+        document.body.removeChild(textArea);
         alert(`📋 Código copiado: ${codigo}`);
     }
 }
@@ -1137,17 +1090,12 @@ function compartilharCodigo() {
     const texto = `🎮 Baixe o app Pega Moedas e use meu código ${codigo} no cadastro!\n\n🔗 Link: https://sites.google.com/view/ganhardinheiroreal\n\nGanhe 500 moedas de bônus! 💰`;
     
     if (navigator.share) {
-        navigator.share({
-            title: 'Pega Moedas - Ganhe PIX',
-            text: texto,
-            url: 'https://sites.google.com/view/ganhardinheiroreal'
-        }).catch(() => {});
+        navigator.share({ title: 'Pega Moedas', text: texto, url: 'https://sites.google.com/view/ganhardinheiroreal' }).catch(() => {});
     } else {
         window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
     }
 }
 
-// PUBLICAÇÃO COM IMAGEM
 function abrirModalPublicar() {
     document.getElementById('modal-publicar').classList.add('active');
     document.getElementById('pub-valor').value = '';
@@ -1172,9 +1120,7 @@ async function publicarComprovante() {
     await database.ref('publicacoes/' + pubId).set({
         userId: usuarioAtual.id,
         nome: usuarioAtual.nome,
-        valor,
-        data,
-        mensagem,
+        valor, data, mensagem,
         imagem: imagemComprovante,
         status: 'pending',
         timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -1185,7 +1131,6 @@ async function publicarComprovante() {
     atualizarPerfil();
 }
 
-// SAQUE
 async function solicitarSaque() {
     const chave = document.getElementById('saque-chave').value.trim();
     const valor = parseFloat(document.getElementById('saque-valor').value);
@@ -1212,11 +1157,10 @@ async function solicitarSaque() {
     usuarioAtual.saldoReal -= valor;
     usuarioAtual.totalSacado = (usuarioAtual.totalSacado || 0) + valor;
     
-    // Verificar se é o primeiro saque
+    // 🎯 LÓGICA DO PRIMEIRO SAQUE (Ativa o convite válido)
     if (!usuarioAtual.primeiroSaqueFeito) {
         usuarioAtual.primeiroSaqueFeito = true;
         
-        // Se veio de convite, dar recompensa ao convidador
         if (usuarioAtual.convidadoPor) {
             const snapConvidador = await database.ref('usuarios/' + usuarioAtual.convidadoPor).once('value');
             if (snapConvidador.exists()) {
@@ -1247,130 +1191,67 @@ async function iniciarFazendinha() {
     
     const snap = await database.ref('usuarios/' + usuarioAtual.id + '/fazendinha').once('value');
     fazendinhaData = snap.val() || {
-        ultimaColeta: Date.now(),
-        moedasMineradas: 0,
-        agua: 0,
-        capim: 0,
-        felicidade: 100,
-        sede: 0,
-        fome: 0,
-        tarefasDiarias: {
-            data: new Date().toDateString(),
-            coletarAgua: 0,
-            coletarCapim: 0,
-            darAgua: 0,
-            darCapim: 0
-        }
+        ultimaColeta: Date.now(), moedasMineradas: 0, agua: 0, capim: 0, felicidade: 100, sede: 0, fome: 0,
+        tarefasDiarias: { data: new Date().toDateString(), coletarAgua: 0, coletarCapim: 0, darAgua: 0, darCapim: 0 }
     };
-    
     atualizarFazendinha();
-    
     if (fazendinhaTimer) clearInterval(fazendinhaTimer);
     fazendinhaTimer = setInterval(atualizarFazendinha, 1000);
 }
 
 function atualizarFazendinha() {
     if (!fazendinhaData) return;
-    
     const hoje = new Date().toDateString();
     if (!fazendinhaData.tarefasDiarias || fazendinhaData.tarefasDiarias.data !== hoje) {
-        fazendinhaData.tarefasDiarias = {
-            data: hoje,
-            coletarAgua: 0,
-            coletarCapim: 0,
-            darAgua: 0,
-            darCapim: 0
-        };
+        fazendinhaData.tarefasDiarias = { data: hoje, coletarAgua: 0, coletarCapim: 0, darAgua: 0, darCapim: 0 };
     }
     
-    const agora = Date.now();
-    const horasPassadas = (agora - fazendinhaData.ultimaColeta) / (1000 * 60 * 60);
+    const horasPassadas = (Date.now() - fazendinhaData.ultimaColeta) / (1000 * 60 * 60);
     const horasRestantes = Math.max(0, 24 - horasPassadas);
-    
     const moedasMineradas = Math.floor(horasPassadas * (450 / 24));
     fazendinhaData.moedasMineradas = moedasMineradas;
     
     document.getElementById('mining-amount').textContent = moedasMineradas;
-    document.getElementById('mining-time').textContent = horasRestantes > 0 ? 
-        `Próxima coleta: ${Math.floor(horasRestantes)}h ${Math.floor((horasRestantes % 1) * 60)}m` : 
-        '✅ Pronto para coletar!';
-    
+    document.getElementById('mining-time').textContent = horasRestantes > 0 ? `Próxima coleta: ${Math.floor(horasRestantes)}h ${Math.floor((horasRestantes % 1) * 60)}m` : '✅ Pronto para coletar!';
     document.getElementById('btn-coletar').disabled = moedasMineradas < 450;
     
     document.getElementById('stat-agua').textContent = fazendinhaData.agua;
     document.getElementById('stat-capim').textContent = fazendinhaData.capim;
     document.getElementById('stat-felicidade').textContent = fazendinhaData.felicidade;
-    
     document.getElementById('vaca-sede').textContent = fazendinhaData.sede;
     document.getElementById('vaca-fome').textContent = fazendinhaData.fome;
     document.getElementById('vaca-felicidade').textContent = fazendinhaData.felicidade;
     
     const cowEmoji = document.getElementById('cow-emoji');
     const cowStatus = document.getElementById('cow-status');
-    
-    if (fazendinhaData.felicidade > 80) {
-        cowEmoji.textContent = '';
-        cowStatus.textContent = 'Sua vaca está muito feliz!';
-    } else if (fazendinhaData.felicidade > 50) {
-        cowEmoji.textContent = '🐄';
-        cowStatus.textContent = 'Sua vaca está bem!';
-    } else if (fazendinhaData.felicidade > 20) {
-        cowEmoji.textContent = '😐';
-        cowStatus.textContent = 'Sua vaca precisa de cuidados!';
-    } else {
-        cowEmoji.textContent = '😢';
-        cowStatus.textContent = 'Sua vaca está triste! Cuide dela!';
-    }
+    if (fazendinhaData.felicidade > 80) { cowEmoji.textContent = '🐄'; cowStatus.textContent = 'Sua vaca está muito feliz!'; }
+    else if (fazendinhaData.felicidade > 50) { cowEmoji.textContent = '🐄'; cowStatus.textContent = 'Sua vaca está bem!'; }
+    else if (fazendinhaData.felicidade > 20) { cowEmoji.textContent = '😐'; cowStatus.textContent = 'Sua vaca precisa de cuidados!'; }
+    else { cowEmoji.textContent = '😢'; cowStatus.textContent = 'Sua vaca está triste! Cuide dela!'; }
     
     const tarefas = fazendinhaData.tarefasDiarias;
     const limite = 5;
-    
-    const usadosAgua = tarefas.coletarAgua || 0;
-    const cardAgua = document.getElementById('task-agua');
-    if (cardAgua) {
-        cardAgua.querySelector('.reward').textContent = `+20 moedas (${usadosAgua}/${limite})`;
-        if (usadosAgua >= limite) cardAgua.classList.add('disabled');
-        else cardAgua.classList.remove('disabled');
-    }
-    
-    const usadosCapim = tarefas.coletarCapim || 0;
-    const cardCapim = document.getElementById('task-capim');
-    if (cardCapim) {
-        cardCapim.querySelector('.reward').textContent = `+20 moedas (${usadosCapim}/${limite})`;
-        if (usadosCapim >= limite) cardCapim.classList.add('disabled');
-        else cardCapim.classList.remove('disabled');
-    }
-    
-    const usadosDarAgua = tarefas.darAgua || 0;
-    const cardDarAgua = document.getElementById('task-dar-agua');
-    if (cardDarAgua) {
-        cardDarAgua.querySelector('.reward').textContent = `+20 moedas (${usadosDarAgua}/${limite})`;
-        if (usadosDarAgua >= limite) cardDarAgua.classList.add('disabled');
-        else cardDarAgua.classList.remove('disabled');
-    }
-    
-    const usadosDarCapim = tarefas.darCapim || 0;
-    const cardDarCapim = document.getElementById('task-dar-capim');
-    if (cardDarCapim) {
-        cardDarCapim.querySelector('.reward').textContent = `+20 moedas (${usadosDarCapim}/${limite})`;
-        if (usadosDarCapim >= limite) cardDarCapim.classList.add('disabled');
-        else cardDarCapim.classList.remove('disabled');
-    }
+    ['agua', 'capim', 'dar-agua', 'dar-capim'].forEach((tipo, i) => {
+        const ids = ['task-agua', 'task-capim', 'task-dar-agua', 'task-dar-capim'];
+        const keys = ['coletarAgua', 'coletarCapim', 'darAgua', 'darCapim'];
+        const usados = tarefas[keys[i]] || 0;
+        const card = document.getElementById(ids[i]);
+        if (card) {
+            card.querySelector('.reward').textContent = `+20 moedas (${usados}/${limite})`;
+            if (usados >= limite) card.classList.add('disabled');
+            else card.classList.remove('disabled');
+        }
+    });
 }
 
 async function coletarMineracao() {
-    if (fazendinhaData.moedasMineradas < 450) {
-        return alert(' Aguarde 24 horas para coletar 450 moedas!');
-    }
-    
+    if (fazendinhaData.moedasMineradas < 450) return alert('⏳ Aguarde 24 horas para coletar 450 moedas!');
     usuarioAtual.moedas += 450;
     fazendinhaData.ultimaColeta = Date.now();
     fazendinhaData.moedasMineradas = 0;
-    
     await salvarUsuario();
     await database.ref('usuarios/' + usuarioAtual.id + '/fazendinha').set(fazendinhaData);
-    
-    alert('🎉 Você coletou 450 moedas!');
+    alert(' Você coletou 450 moedas!');
     atualizarFazendinha();
     atualizarTelaHome();
 }
@@ -1378,150 +1259,80 @@ async function coletarMineracao() {
 async function fazerTarefa(tipo) {
     const hoje = new Date().toDateString();
     if (!fazendinhaData.tarefasDiarias || fazendinhaData.tarefasDiarias.data !== hoje) {
-        fazendinhaData.tarefasDiarias = {
-            data: hoje,
-            coletarAgua: 0,
-            coletarCapim: 0,
-            darAgua: 0,
-            darCapim: 0
-        };
+        fazendinhaData.tarefasDiarias = { data: hoje, coletarAgua: 0, coletarCapim: 0, darAgua: 0, darCapim: 0 };
     }
-    
     const limite = 5;
-    let recompensa = 20;
-    let mensagem = '';
-    let tipoContador = '';
+    let recompensa = 20, mensagem = '', tipoContador = '';
     
     switch(tipo) {
         case 'agua':
             tipoContador = 'coletarAgua';
-            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) {
-                return alert(`❌ Limite diário atingido! Você já coletou ${limite} águas hoje.`);
-            }
-            fazendinhaData.agua += 1;
-            fazendinhaData.tarefasDiarias[tipoContador]++;
-            mensagem = '💧 Você coletou 1 água!';
-            break;
-            
+            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
+            fazendinhaData.agua += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '💧 Você coletou 1 água!'; break;
         case 'capim':
             tipoContador = 'coletarCapim';
-            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) {
-                return alert(`❌ Limite diário atingido! Você já coletou ${limite} capins hoje.`);
-            }
-            fazendinhaData.capim += 1;
-            fazendinhaData.tarefasDiarias[tipoContador]++;
-            mensagem = '🌿 Você coletou 1 capim!';
-            break;
-            
+            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
+            fazendinhaData.capim += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '🌿 Você coletou 1 capim!'; break;
         case 'dar-agua':
             tipoContador = 'darAgua';
-            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) {
-                return alert(`❌ Limite diário atingido! Você já deu ${limite} águas hoje.`);
-            }
+            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
             if (fazendinhaData.agua < 1) return alert('❌ Você precisa coletar água primeiro!');
-            fazendinhaData.agua -= 1;
-            fazendinhaData.sede = Math.max(0, fazendinhaData.sede - 20);
-            fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10);
-            fazendinhaData.tarefasDiarias[tipoContador]++;
-            mensagem = '🥤 Você deu água para a vaca!';
-            break;
-            
+            fazendinhaData.agua -= 1; fazendinhaData.sede = Math.max(0, fazendinhaData.sede - 20); fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10); fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '🥤 Você deu água para a vaca!'; break;
         case 'dar-capim':
             tipoContador = 'darCapim';
-            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) {
-                return alert(` Limite diário atingido! Você já deu ${limite} capins hoje.`);
-            }
+            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
             if (fazendinhaData.capim < 1) return alert('❌ Você precisa coletar capim primeiro!');
-            fazendinhaData.capim -= 1;
-            fazendinhaData.fome = Math.max(0, fazendinhaData.fome - 20);
-            fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10);
-            fazendinhaData.tarefasDiarias[tipoContador]++;
-            mensagem = '🌾 Você deu capim para a vaca!';
-            break;
+            fazendinhaData.capim -= 1; fazendinhaData.fome = Math.max(0, fazendinhaData.fome - 20); fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10); fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = ' Você deu capim para a vaca!'; break;
     }
     
     usuarioAtual.moedas += recompensa;
     await salvarUsuario();
     await database.ref('usuarios/' + usuarioAtual.id + '/fazendinha').set(fazendinhaData);
-    
-    const restantes = limite - fazendinhaData.tarefasDiarias[tipoContador];
-    alert(`${mensagem}\n\n+${recompensa} moedas!\nRestantes hoje: ${restantes}`);
+    alert(`${mensagem}\n\n+${recompensa} moedas!`);
     atualizarFazendinha();
     atualizarTelaHome();
 }
 
 // JOGOS
 function iniciarJogo(tipo) {
-    if (tipo === 'fazendinha') {
-        iniciarFazendinha();
-        return;
-    }
-    
+    if (tipo === 'fazendinha') { iniciarFazendinha(); return; }
     mostrar('screen-jogo');
     document.getElementById('nav-bottom').style.display = 'none';
     document.getElementById('game-coins').textContent = '0';
     jogoAtual = { tipo, moedas: 0, ativo: true };
-    
-    switch(tipo) {
-        case 'pegar-moedas': iniciarPegaMoedas(); break;
-        case 'clicker': iniciarClicker(); break;
-        case 'memoria': iniciarMemoria(); break;
-    }
+    if (tipo === 'pegar-moedas') iniciarPegaMoedas();
+    else if (tipo === 'clicker') iniciarClicker();
+    else if (tipo === 'memoria') iniciarMemoria();
 }
 
-function pararJogo() {
-    if (gameLoop) cancelAnimationFrame(gameLoop);
-    jogoAtual = null;
-}
+function pararJogo() { if (gameLoop) cancelAnimationFrame(gameLoop); jogoAtual = null; }
 
 function iniciarPegaMoedas() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     document.getElementById('game-title').textContent = '🪙 Pega Moedas';
     document.getElementById('game-instructions').textContent = 'Arraste para mover';
-    
     let player = { x: canvas.width/2, y: canvas.height-50, w: 50, h: 30 };
-    let moedas = [];
-    let frame = 0;
+    let moedas = [], frame = 0;
     
     function loop() {
         if (!jogoAtual?.ativo) return;
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = '#87CEEB';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(player.x-player.w/2, player.y, player.w, player.h);
-        
+        ctx.fillStyle = '#87CEEB'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = '#8B4513'; ctx.fillRect(player.x-player.w/2, player.y, player.w, player.h);
         frame++;
-        if (frame % 30 === 0) {
-            moedas.push({ x: Math.random()*(canvas.width-30)+15, y: -20, r: 12 });
-        }
-        
+        if (frame % 30 === 0) moedas.push({ x: Math.random()*(canvas.width-30)+15, y: -20, r: 12 });
         for (let i=moedas.length-1; i>=0; i--) {
-            let m = moedas[i];
-            m.y += 3;
-            
-            ctx.beginPath();
-            ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
-            ctx.fillStyle = '#FFD700';
-            ctx.fill();
-            
+            let m = moedas[i]; m.y += 3;
+            ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI*2); ctx.fillStyle = '#FFD700'; ctx.fill();
             if (m.y > player.y && m.y < player.y+player.h && Math.abs(m.x - player.x) < player.w/2 + m.r) {
-                jogoAtual.moedas++;
-                document.getElementById('game-coins').textContent = jogoAtual.moedas;
-                moedas.splice(i,1);
-            } else if (m.y > canvas.height) {
-                moedas.splice(i,1);
-            }
+                jogoAtual.moedas++; document.getElementById('game-coins').textContent = jogoAtual.moedas; moedas.splice(i,1);
+            } else if (m.y > canvas.height) moedas.splice(i,1);
         }
-        
         gameLoop = requestAnimationFrame(loop);
     }
-    
     canvas.onmousemove = e => { player.x = e.offsetX; };
     canvas.ontouchmove = e => { e.preventDefault(); player.x = e.touches[0].clientX - canvas.offsetLeft; };
-    
     loop();
     setTimeout(() => finalizarJogo(), 30000);
 }
@@ -1531,149 +1342,78 @@ function iniciarClicker() {
     const ctx = canvas.getContext('2d');
     document.getElementById('game-title').textContent = '👆 Clicker';
     document.getElementById('game-instructions').textContent = 'Clique o máximo possível!';
-    
-    let tempo = 10;
-    let cliques = 0;
-    
+    let tempo = 10, cliques = 0;
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = '#667eea';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        
-        ctx.beginPath();
-        ctx.arc(canvas.width/2, canvas.height/2, 100, 0, Math.PI*2);
-        ctx.fillStyle = '#FFD700';
-        ctx.fill();
-        
-        ctx.fillStyle = '#333';
-        ctx.font = 'bold 24px Arial';
-        ctx.textAlign = 'center';
+        ctx.fillStyle = '#667eea'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 100, 0, Math.PI*2); ctx.fillStyle = '#FFD700'; ctx.fill();
+        ctx.fillStyle = '#333'; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center';
         ctx.fillText('CLIQUE!', canvas.width/2, canvas.height/2);
         ctx.fillText(`Tempo: ${tempo}s`, canvas.width/2, 50);
         ctx.fillText(`Cliques: ${cliques}`, canvas.width/2, 100);
     }
-    
-    canvas.onclick = () => {
-        if (tempo > 0) {
-            cliques++;
-            if (cliques % 5 === 0) {
-                jogoAtual.moedas++;
-                document.getElementById('game-coins').textContent = jogoAtual.moedas;
-            }
-            draw();
-        }
-    };
-    
-    const timer = setInterval(() => {
-        tempo--;
-        draw();
-        if (tempo <= 0) { clearInterval(timer); finalizarJogo(); }
-    }, 1000);
-    
+    canvas.onclick = () => { if (tempo > 0) { cliques++; if (cliques % 5 === 0) { jogoAtual.moedas++; document.getElementById('game-coins').textContent = jogoAtual.moedas; } draw(); } };
+    const timer = setInterval(() => { tempo--; draw(); if (tempo <= 0) { clearInterval(timer); finalizarJogo(); } }, 1000);
     draw();
 }
 
 function iniciarMemoria() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    document.getElementById('game-title').textContent = ' Memória';
+    document.getElementById('game-title').textContent = '🧠 Memória';
     document.getElementById('game-instructions').textContent = 'Encontre os pares!';
-    
     const emojis = ['🎮','💎','🎁','🎪'];
-    let cartas = [];
-    let viradas = [];
-    let pares = 0;
-    let bloqueado = false;
-    
+    let cartas = [], viradas = [], pares = 0, bloqueado = false;
     let valores = [...emojis, ...emojis].sort(() => Math.random()-0.5);
-    for (let i=0; i<8; i++) {
-        cartas.push({ x: (i%4)*80+35, y: Math.floor(i/4)*100+50, w:70, h:80, valor: valores[i], virada: false });
-    }
+    for (let i=0; i<8; i++) cartas.push({ x: (i%4)*80+35, y: Math.floor(i/4)*100+50, w:70, h:80, valor: valores[i], virada: false });
     
     canvas.onclick = e => {
         if (bloqueado) return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
         const y = (e.clientY - rect.top) * (canvas.height/rect.height);
-        
         for (let c of cartas) {
             if (x >= c.x && x <= c.x+c.w && y >= c.y && y <= c.y+c.h && !c.virada) {
-                c.virada = true;
-                viradas.push(c);
-                
+                c.virada = true; viradas.push(c);
                 if (viradas.length === 2) {
                     bloqueado = true;
                     setTimeout(() => {
-                        if (viradas[0].valor === viradas[1].valor) {
-                            pares++;
-                            if (pares % 2 === 0) {
-                                jogoAtual.moedas += 50;
-                                document.getElementById('game-coins').textContent = jogoAtual.moedas;
-                            }
-                        } else {
-                            viradas[0].virada = false;
-                            viradas[1].virada = false;
-                        }
-                        viradas = [];
-                        bloqueado = false;
-                        draw();
+                        if (viradas[0].valor === viradas[1].valor) { pares++; if (pares % 2 === 0) { jogoAtual.moedas += 50; document.getElementById('game-coins').textContent = jogoAtual.moedas; } }
+                        else { viradas[0].virada = false; viradas[1].virada = false; }
+                        viradas = []; bloqueado = false; draw();
                     }, 1000);
                 }
-                draw();
-                break;
+                draw(); break;
             }
         }
     };
-    
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = '#667eea';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        
+        ctx.fillStyle = '#667eea'; ctx.fillRect(0,0,canvas.width,canvas.height);
         cartas.forEach(c => {
-            ctx.fillStyle = c.virada ? '#FFD700' : '#4169E1';
-            ctx.fillRect(c.x, c.y, c.w, c.h);
-            if (c.virada) {
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 32px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(c.valor, c.x+c.w/2, c.y+c.h/2);
-            }
+            ctx.fillStyle = c.virada ? '#FFD700' : '#4169E1'; ctx.fillRect(c.x, c.y, c.w, c.h);
+            if (c.virada) { ctx.fillStyle = '#333'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.valor, c.x+c.w/2, c.y+c.h/2); }
         });
     }
-    
     draw();
 }
 
 async function finalizarJogo() {
     if (!jogoAtual) return;
     jogoAtual.ativo = false;
-    
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = 'rgba(0,0,0,0.85)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    
-    ctx.fillStyle = '#FFD700';
-    ctx.font = 'bold 32px Arial';
-    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#FFD700'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center';
     ctx.fillText('🎮 Fim!', canvas.width/2, canvas.height/2 - 20);
-    ctx.fillStyle = 'white';
-    ctx.font = '24px Arial';
+    ctx.fillStyle = 'white'; ctx.font = '24px Arial';
     ctx.fillText(`+${jogoAtual.moedas} moedas`, canvas.width/2, canvas.height/2 + 30);
-    
     usuarioAtual.moedas += jogoAtual.moedas;
     await salvarUsuario();
-    
     setTimeout(() => voltarHome(), 2000);
 }
 
-// INICIALIZAÇÃO
-window.addEventListener('load', () => {
-    verificarSessao();
-});
+window.addEventListener('load', () => { verificarSessao(); });
 </script>
 </body>
 </html>

@@ -157,7 +157,6 @@
     
     .login-hint { font-size: 13px; text-align: center; margin-top: 5px; opacity: 0.8; }
     
-    /* CONVITE */
     .convite-card { 
         background: linear-gradient(135deg, #FFD700, #FFA500); 
         color: #333; 
@@ -216,7 +215,7 @@
     <div class="card">
         <h2>🔐 Entrar</h2>
         <input type="text" id="login-cpf" placeholder="CPF ou E-mail" inputmode="text">
-        <p class="login-hint"> Digite seu CPF ou E-mail cadastrado</p>
+        <p class="login-hint">💡 Digite seu CPF ou E-mail cadastrado</p>
         <input type="password" id="login-senha" placeholder="Senha">
         <div class="error" id="login-error"></div>
         <button onclick="fazerLogin()">Entrar</button>
@@ -273,10 +272,10 @@
                 <p>Pegue moedas caindo</p>
             </div>
             <div class="game-card" onclick="iniciarJogo('fazendinha')">
-    <div class="game-icon">🐄</div>
-    <h3>Fazendinha</h3>
-    <p>Cuide da vaca</p>
-</div>
+                <div class="game-icon">🐄</div>
+                <h3>Fazendinha</h3>
+                <p>Cuide da vaca</p>
+            </div>
             <div class="game-card" onclick="iniciarJogo('clicker')">
                 <div class="game-icon">👆</div>
                 <h3>Clicker</h3>
@@ -307,7 +306,7 @@
 
 <!-- PERFIL -->
 <div id="screen-perfil" class="screen">
-    <h1> Meu Perfil</h1>
+    <h1>👤 Meu Perfil</h1>
     
     <div class="profile-header">
         <div class="profile-avatar">👤</div>
@@ -325,7 +324,6 @@
         </div>
     </div>
     
-    <!-- CARTÃO DE CONVITE -->
     <div class="convite-card">
         <h3 style="color: #333; margin-bottom: 10px;">🎁 Seu Código de Convite</h3>
         <div class="convite-codigo" id="meu-codigo-convite">CARREGANDO...</div>
@@ -351,14 +349,14 @@
     </div>
     
     <button class="btn-success" onclick="abrirModalResgatarCodigo()" style="margin: 15px 0;">
-         Resgatar Código de Convite
+        🎁 Resgatar Código de Convite
     </button>
     
     <button class="btn-publicar" onclick="abrirModalPublicar()">
-         Publicar Comprovante (Grátis - Ganhe 500 moedas se aprovado)
+        📸 Publicar Comprovante (Grátis - Ganhe 500 moedas se aprovado)
     </button>
     
-    <h2> Minhas Publicações</h2>
+    <h2>📋 Minhas Publicações</h2>
     <div id="lista-publicacoes">
         <p style="text-align:center; color:#ccc;">Carregando...</p>
     </div>
@@ -366,7 +364,7 @@
 
 <!-- SAQUE -->
 <div id="screen-saque" class="screen">
-    <h1> Sacar via PIX</h1>
+    <h1>💸 Sacar via PIX</h1>
     <div class="card">
         <div style="text-align:center; margin-bottom:20px;">
             <small>Saldo disponível:</small>
@@ -411,7 +409,7 @@
             <div class="label">Água</div>
         </div>
         <div class="farm-stat">
-            <div class="icon">🌿</div>
+            <div class="icon"></div>
             <div class="value" id="stat-capim">0</div>
             <div class="label">Capim</div>
         </div>
@@ -435,12 +433,12 @@
             <div class="reward">+20 moedas (0/5)</div>
         </div>
         <div class="task-card" id="task-dar-agua" onclick="fazerTarefa('dar-agua')">
-            <div class="icon">🥤</div>
+            <div class="icon"></div>
             <div class="name">Dar Água</div>
             <div class="reward">+20 moedas (0/5)</div>
         </div>
         <div class="task-card" id="task-dar-capim" onclick="fazerTarefa('dar-capim')">
-            <div class="icon"></div>
+            <div class="icon">🌾</div>
             <div class="name">Dar Capim</div>
             <div class="reward">+20 moedas (0/5)</div>
         </div>
@@ -449,7 +447,7 @@
     <div class="card">
         <h3>📊 Status da Vaca</h3>
         <p style="margin:10px 0;">💧 Sede: <span id="vaca-sede">0</span>%</p>
-        <p style="margin:10px 0;">🌾 Fome: <span id="vaca-fome">0</span>%</p>
+        <p style="margin:10px 0;"> Fome: <span id="vaca-fome">0</span>%</p>
         <p style="margin:10px 0;">😊 Felicidade: <span id="vaca-felicidade">100</span>%</p>
     </div>
 </div>
@@ -675,7 +673,7 @@ async function criarConta() {
 
     if (!nome || nome.split(' ').length < 2) return err.textContent = '❌ Nome completo necessário';
     if (!validarCPF(cpf)) return err.textContent = '❌ CPF inválido';
-    if (!email.includes('@')) return err.textContent = ' E-mail inválido';
+    if (!email.includes('@')) return err.textContent = '❌ E-mail inválido';
     if (senha.length < 6) return err.textContent = '❌ Senha mínima: 6 caracteres';
     if (senha !== senha2) return err.textContent = '❌ Senhas diferentes';
 
@@ -706,7 +704,7 @@ async function criarConta() {
             if (codigoValido) {
                 bonusConvite = BONUS_CONVITE;
             } else {
-                err.textContent = ' Código já utilizado ou inválido';
+                err.textContent = '❌ Código já utilizado ou inválido';
                 return;
             }
         } else {
@@ -877,7 +875,7 @@ async function atualizarPerfil() {
     pubsSnap.forEach(child => {
         const pub = child.val();
         const statusText = pub.status === 'approved' ? '✅ Aprovada' : 
-                           pub.status === 'rejected' ? '❌ Recusada' : ' Aguardando';
+                           pub.status === 'rejected' ? '❌ Recusada' : '⏳ Aguardando';
         const statusColor = pub.status === 'approved' ? '#51cf66' : 
                             pub.status === 'rejected' ? '#ff6b6b' : '#ffc107';
         
@@ -899,7 +897,7 @@ async function atualizarPerfil() {
                 <div class="publicacao-status">
                     Status: <strong style="color:${statusColor}">${statusText}</strong>
                 </div>
-                ${pub.status === 'approved' ? '<div class="publicacao-bonus">🎁 +500 moedas recebidas!</div>' : ''}
+                ${pub.status === 'approved' ? '<div class="publicacao-bonus"> +500 moedas recebidas!</div>' : ''}
             </div>
         `;
     });
@@ -924,7 +922,7 @@ async function atualizarTelaSaque() {
     let html = '';
     saquesSnap.forEach(child => {
         const s = child.val();
-        html += `<div class="item"><strong>R$ ${s.valor.toFixed(2)}</strong><br>${new Date(s.data).toLocaleString('pt-BR')}<br>Status: ${s.status === 'paid' ? '✅ Pago' : ' Pendente'}</div>`;
+        html += `<div class="item"><strong>R$ ${s.valor.toFixed(2)}</strong><br>${new Date(s.data).toLocaleString('pt-BR')}<br>Status: ${s.status === 'paid' ? '✅ Pago' : '⏳ Pendente'}</div>`;
     });
     div.innerHTML = html;
 }
@@ -1033,9 +1031,7 @@ async function resgatarCodigo() {
     let codigoValido = false;
     
     snapConvite.forEach(child => {
-        // 🛡️ CORREÇÃO: Impedir de usar o próprio código
         if (child.key === usuarioAtual.id) return;
-
         const user = child.val();
         if (!user.codigoUsadoEm) {
             convidadorId = child.key;
@@ -1070,7 +1066,7 @@ async function resgatarCodigo() {
 
 function copiarMeuCodigo() {
     const codigo = usuarioAtual.codigoConvite;
-    if (!codigo) return alert(' Código ainda não gerado.');
+    if (!codigo) return alert('❌ Código ainda não gerado.');
     
     if (navigator.clipboard) {
         navigator.clipboard.writeText(codigo).then(() => alert(`📋 Código copiado: ${codigo}`));
@@ -1089,10 +1085,14 @@ function compartilharCodigo() {
     const codigo = usuarioAtual.codigoConvite;
     const texto = `🎮 Baixe o app Pega Moedas e use meu código ${codigo} no cadastro!\n\n🔗 Link: https://sites.google.com/view/ganhardinheiroreal\n\nGanhe 500 moedas de bônus! 💰`;
     
-    if (navigator.share) {
-        navigator.share({ title: 'Pega Moedas', text: texto, url: 'https://sites.google.com/view/ganhardinheiroreal' }).catch(() => {});
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isWebView = /(wv|WebView)/i.test(navigator.userAgent);
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+    
+    if (isAndroid || isWebView) {
+        window.location.href = whatsappUrl;
     } else {
-        window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+        window.open(whatsappUrl, '_blank');
     }
 }
 
@@ -1114,7 +1114,7 @@ async function publicarComprovante() {
     const err = document.getElementById('pub-error');
     
     if (!valor || !data) return err.textContent = '❌ Preencha valor e data';
-    if (!imagemComprovante) return err.textContent = '❌ Selecione uma foto do comprovante';
+    if (!imagemComprovante) return err.textContent = ' Selecione uma foto do comprovante';
     
     const pubId = 'pub_' + Date.now();
     await database.ref('publicacoes/' + pubId).set({
@@ -1157,7 +1157,6 @@ async function solicitarSaque() {
     usuarioAtual.saldoReal -= valor;
     usuarioAtual.totalSacado = (usuarioAtual.totalSacado || 0) + valor;
     
-    // 🎯 LÓGICA DO PRIMEIRO SAQUE (Ativa o convite válido)
     if (!usuarioAtual.primeiroSaqueFeito) {
         usuarioAtual.primeiroSaqueFeito = true;
         
@@ -1245,13 +1244,13 @@ function atualizarFazendinha() {
 }
 
 async function coletarMineracao() {
-    if (fazendinhaData.moedasMineradas < 450) return alert('⏳ Aguarde 24 horas para coletar 450 moedas!');
+    if (fazendinhaData.moedasMineradas < 450) return alert(' Aguarde 24 horas para coletar 450 moedas!');
     usuarioAtual.moedas += 450;
     fazendinhaData.ultimaColeta = Date.now();
     fazendinhaData.moedasMineradas = 0;
     await salvarUsuario();
     await database.ref('usuarios/' + usuarioAtual.id + '/fazendinha').set(fazendinhaData);
-    alert(' Você coletou 450 moedas!');
+    alert('🎉 Você coletou 450 moedas!');
     atualizarFazendinha();
     atualizarTelaHome();
 }
@@ -1272,7 +1271,7 @@ async function fazerTarefa(tipo) {
         case 'capim':
             tipoContador = 'coletarCapim';
             if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
-            fazendinhaData.capim += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '🌿 Você coletou 1 capim!'; break;
+            fazendinhaData.capim += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = ' Você coletou 1 capim!'; break;
         case 'dar-agua':
             tipoContador = 'darAgua';
             if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
@@ -1282,7 +1281,7 @@ async function fazerTarefa(tipo) {
             tipoContador = 'darCapim';
             if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
             if (fazendinhaData.capim < 1) return alert('❌ Você precisa coletar capim primeiro!');
-            fazendinhaData.capim -= 1; fazendinhaData.fome = Math.max(0, fazendinhaData.fome - 20); fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10); fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = ' Você deu capim para a vaca!'; break;
+            fazendinhaData.capim -= 1; fazendinhaData.fome = Math.max(0, fazendinhaData.fome - 20); fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10); fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '🌾 Você deu capim para a vaca!'; break;
     }
     
     usuarioAtual.moedas += recompensa;
@@ -1362,40 +1361,105 @@ function iniciarMemoria() {
     const ctx = canvas.getContext('2d');
     document.getElementById('game-title').textContent = '🧠 Memória';
     document.getElementById('game-instructions').textContent = 'Encontre os pares!';
-    const emojis = ['🎮','💎','🎁','🎪'];
-    let cartas = [], viradas = [], pares = 0, bloqueado = false;
+    
+    const emojis = ['','💎','🎁',''];
+    let cartas = [];
+    let viradas = [];
+    let pares = 0;
+    let bloqueado = false;
+    let jogoFinalizado = false;
+    
     let valores = [...emojis, ...emojis].sort(() => Math.random()-0.5);
-    for (let i=0; i<8; i++) cartas.push({ x: (i%4)*80+35, y: Math.floor(i/4)*100+50, w:70, h:80, valor: valores[i], virada: false });
+    for (let i=0; i<8; i++) {
+        cartas.push({ x: (i%4)*80+35, y: Math.floor(i/4)*100+50, w:70, h:80, valor: valores[i], virada: false });
+    }
     
     canvas.onclick = e => {
-        if (bloqueado) return;
+        if (bloqueado || jogoFinalizado) return;
+        
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
         const y = (e.clientY - rect.top) * (canvas.height/rect.height);
+        
         for (let c of cartas) {
             if (x >= c.x && x <= c.x+c.w && y >= c.y && y <= c.y+c.h && !c.virada) {
-                c.virada = true; viradas.push(c);
+                c.virada = true;
+                viradas.push(c);
+                
                 if (viradas.length === 2) {
                     bloqueado = true;
                     setTimeout(() => {
-                        if (viradas[0].valor === viradas[1].valor) { pares++; if (pares % 2 === 0) { jogoAtual.moedas += 50; document.getElementById('game-coins').textContent = jogoAtual.moedas; } }
-                        else { viradas[0].virada = false; viradas[1].virada = false; }
-                        viradas = []; bloqueado = false; draw();
+                        if (viradas[0].valor === viradas[1].valor) {
+                            pares++;
+                            if (pares % 2 === 0) {
+                                jogoAtual.moedas += 50;
+                                document.getElementById('game-coins').textContent = jogoAtual.moedas;
+                            }
+                        } else {
+                            viradas[0].virada = false;
+                            viradas[1].virada = false;
+                        }
+                        viradas = [];
+                        bloqueado = false;
+                        draw();
+                        
+                        if (pares === 4 && !jogoFinalizado) {
+                            jogoFinalizado = true;
+                            finalizarJogoMemoria();
+                        }
                     }, 1000);
                 }
-                draw(); break;
+                draw();
+                break;
             }
         }
     };
+    
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = '#667eea'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = '#667eea';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        
         cartas.forEach(c => {
-            ctx.fillStyle = c.virada ? '#FFD700' : '#4169E1'; ctx.fillRect(c.x, c.y, c.w, c.h);
-            if (c.virada) { ctx.fillStyle = '#333'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.valor, c.x+c.w/2, c.y+c.h/2); }
+            ctx.fillStyle = c.virada ? '#FFD700' : '#4169E1';
+            ctx.fillRect(c.x, c.y, c.w, c.h);
+            if (c.virada) {
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 32px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(c.valor, c.x+c.w/2, c.y+c.h/2);
+            }
         });
     }
+    
     draw();
+}
+
+async function finalizarJogoMemoria() {
+    if (!jogoAtual) return;
+    jogoAtual.ativo = false;
+    
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    ctx.fillStyle = 'rgba(0,0,0,0.85)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    
+    ctx.fillStyle = '#FFD700';
+    ctx.font = 'bold 32px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎉 Parabéns!', canvas.width/2, canvas.height/2 - 40);
+    ctx.fillStyle = '#51cf66';
+    ctx.fillText('Você venceu!', canvas.width/2, canvas.height/2);
+    ctx.fillStyle = 'white';
+    ctx.font = '24px Arial';
+    ctx.fillText(`+${jogoAtual.moedas} moedas`, canvas.width/2, canvas.height/2 + 40);
+    
+    usuarioAtual.moedas += jogoAtual.moedas;
+    await salvarUsuario();
+    
+    setTimeout(() => voltarHome(), 3000);
 }
 
 async function finalizarJogo() {

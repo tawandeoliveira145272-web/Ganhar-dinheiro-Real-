@@ -225,7 +225,7 @@
 
 <!-- CADASTRO -->
 <div id="screen-cadastro" class="screen">
-    <h1>📝 Criar Conta</h1>
+    <h1> Criar Conta</h1>
     <div class="card" style="background: linear-gradient(135deg, #ff6b6b, #ee5a6f);">
         <h2>🎁 Bônus de Boas-Vindas!</h2>
         <p style="text-align:center; font-size:18px;">Ganhe <strong>400 moedas</strong> + <strong>R$ 0,20</strong>!</p>
@@ -296,7 +296,7 @@
 <div id="screen-feed" class="screen">
     <h1>📢 Feed de Saques</h1>
     <div class="feed-header">
-        <h2>🎉 Comprovantes Aprovados</h2>
+        <h2> Comprovantes Aprovados</h2>
         <p>Veja quem já sacou e ganhou!</p>
     </div>
     <div id="feed-publicacoes">
@@ -433,7 +433,7 @@
             <div class="reward">+20 moedas (0/5)</div>
         </div>
         <div class="task-card" id="task-dar-agua" onclick="fazerTarefa('dar-agua')">
-            <div class="icon"></div>
+            <div class="icon">🥤</div>
             <div class="name">Dar Água</div>
             <div class="reward">+20 moedas (0/5)</div>
         </div>
@@ -447,7 +447,7 @@
     <div class="card">
         <h3>📊 Status da Vaca</h3>
         <p style="margin:10px 0;">💧 Sede: <span id="vaca-sede">0</span>%</p>
-        <p style="margin:10px 0;"> Fome: <span id="vaca-fome">0</span>%</p>
+        <p style="margin:10px 0;">🌾 Fome: <span id="vaca-fome">0</span>%</p>
         <p style="margin:10px 0;">😊 Felicidade: <span id="vaca-felicidade">100</span>%</p>
     </div>
 </div>
@@ -483,7 +483,7 @@
         <span class="label">Perfil</span>
     </div>
     <div class="nav-item" onclick="navegar('saque')">
-        <span class="icon">💸</span>
+        <span class="icon"></span>
         <span class="label">Sacar</span>
     </div>
 </div>
@@ -528,7 +528,7 @@
         <input type="text" id="pub-data" placeholder="Data do saque">
         
         <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
-            <div class="upload-icon">📷</div>
+            <div class="upload-icon"></div>
             <div>Toque para selecionar foto do comprovante</div>
             <div style="font-size:12px; margin-top:5px; opacity:0.8;">(PNG, JPG até 2MB)</div>
             <img id="upload-preview" class="upload-preview" alt="Preview">
@@ -660,7 +660,7 @@ function gerarCodigoConvite() {
     return codigo;
 }
 
-// CADASTRO
+// CADASTRO - SISTEMA INFINITO DE CONVITES ♾️
 async function criarConta() {
     const nome = document.getElementById('cad-nome').value.trim();
     const cpf = document.getElementById('cad-cpf').value.trim();
@@ -683,6 +683,7 @@ async function criarConta() {
     const snapshotEmail = await database.ref('usuarios').orderByChild('email').equalTo(email).once('value');
     if (snapshotEmail.exists()) return err.textContent = '❌ E-mail já cadastrado';
 
+    // ✅ SISTEMA INFINITO: Múltiplas pessoas podem usar o mesmo código
     let convidadoPor = null;
     let bonusConvite = 0;
     
@@ -693,20 +694,10 @@ async function criarConta() {
             .once('value');
         
         if (snapConvite.exists()) {
-            let codigoValido = false;
             snapConvite.forEach(child => {
-                if (!child.val().codigoUsadoEm) {
-                    convidadoPor = child.key;
-                    codigoValido = true;
-                }
+                convidadoPor = child.key;
             });
-            
-            if (codigoValido) {
-                bonusConvite = BONUS_CONVITE;
-            } else {
-                err.textContent = '❌ Código já utilizado ou inválido';
-                return;
-            }
+            bonusConvite = BONUS_CONVITE;
         } else {
             err.textContent = '❌ Código de convite inválido';
             return;
@@ -726,7 +717,6 @@ async function criarConta() {
         convidadoPor: convidadoPor,
         amigosConvidados: [],
         convitesValidos: 0,
-        codigoUsadoEm: null,
         primeiroSaqueFeito: false,
         fazendinha: {
             ultimaColeta: Date.now(),
@@ -749,16 +739,21 @@ async function criarConta() {
     
     await database.ref('usuarios/' + userId).set(novoUsuario);
     
+    // ✅ Adicionar na lista de convidados (SEM bloquear o código)
     if (convidadoPor) {
         const snapConvidador = await database.ref('usuarios/' + convidadoPor).once('value');
         if (snapConvidador.exists()) {
             const convidador = snapConvidador.val();
             const amigosLista = convidador.amigosConvidados || [];
-            amigosLista.push(userId);
+            
+            // Evita duplicatas
+            if (!amigosLista.includes(userId)) {
+                amigosLista.push(userId);
+            }
             
             await database.ref('usuarios/' + convidadoPor).update({
-                amigosConvidados: amigosLista,
-                codigoUsadoEm: Date.now()
+                amigosConvidados: amigosLista
+                // ⚠️ NÃO marca codigoUsadoEm aqui!
             });
         }
     }
@@ -779,7 +774,7 @@ async function fazerLogin() {
     const err = document.getElementById('login-error');
     err.textContent = '';
 
-    if (!input || !senha) return err.textContent = '❌ Preencha CPF/E-mail e senha';
+    if (!input || !senha) return err.textContent = ' Preencha CPF/E-mail e senha';
 
     const tipo = detectarTipoLogin(input);
     let snapshot, campoBusca;
@@ -897,7 +892,7 @@ async function atualizarPerfil() {
                 <div class="publicacao-status">
                     Status: <strong style="color:${statusColor}">${statusText}</strong>
                 </div>
-                ${pub.status === 'approved' ? '<div class="publicacao-bonus"> +500 moedas recebidas!</div>' : ''}
+                ${pub.status === 'approved' ? '<div class="publicacao-bonus">🎁 +500 moedas recebidas!</div>' : ''}
             </div>
         `;
     });
@@ -1009,6 +1004,7 @@ function abrirModalResgatarCodigo() {
     document.getElementById('resgatar-success').textContent = '';
 }
 
+// RESGATAR CÓDIGO - SISTEMA INFINITO ♾️
 async function resgatarCodigo() {
     const codigo = document.getElementById('resgatar-codigo-input').value.trim().toUpperCase();
     const err = document.getElementById('resgatar-error');
@@ -1017,7 +1013,7 @@ async function resgatarCodigo() {
     err.textContent = '';
     suc.textContent = '';
     
-    if (!codigo || codigo.length !== 6) return err.textContent = '❌ Código deve ter 6 dígitos';
+    if (!codigo || codigo.length !== 6) return err.textContent = ' Código deve ter 6 dígitos';
     if (usuarioAtual.convidadoPor) return err.textContent = '❌ Você já usou um código de convite';
     
     const snapConvite = await database.ref('usuarios')
@@ -1025,35 +1021,36 @@ async function resgatarCodigo() {
         .equalTo(codigo)
         .once('value');
     
-    if (!snapConvite.exists()) return err.textContent = ' Código inválido';
+    if (!snapConvite.exists()) return err.textContent = '❌ Código inválido';
     
     let convidadorId = null;
-    let codigoValido = false;
     
     snapConvite.forEach(child => {
+        // 🛡️ Impedir de usar o próprio código
         if (child.key === usuarioAtual.id) return;
-        const user = child.val();
-        if (!user.codigoUsadoEm) {
-            convidadorId = child.key;
-            codigoValido = true;
-        }
+        convidadorId = child.key;
     });
     
-    if (!codigoValido) return err.textContent = '❌ Código expirado ou já utilizado';
+    if (!convidadorId) return err.textContent = '❌ Código inválido';
     
+    // ✅ Dar bônus ao usuário
     usuarioAtual.moedas = (usuarioAtual.moedas || 0) + BONUS_CONVITE;
     usuarioAtual.convidadoPor = convidadorId;
     await salvarUsuario();
     
+    // ✅ Adicionar na lista de convidados do convidador
     const snapConvidador = await database.ref('usuarios/' + convidadorId).once('value');
     if (snapConvidador.exists()) {
         const convidador = snapConvidador.val();
         const amigosLista = convidador.amigosConvidados || [];
-        amigosLista.push(usuarioAtual.id);
+        
+        if (!amigosLista.includes(usuarioAtual.id)) {
+            amigosLista.push(usuarioAtual.id);
+        }
         
         await database.ref('usuarios/' + convidadorId).update({
-            amigosConvidados: amigosLista,
-            codigoUsadoEm: Date.now()
+            amigosConvidados: amigosLista
+            // ⚠️ NÃO marca codigoUsadoEm aqui!
         });
     }
     
@@ -1069,7 +1066,7 @@ function copiarMeuCodigo() {
     if (!codigo) return alert('❌ Código ainda não gerado.');
     
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(codigo).then(() => alert(`📋 Código copiado: ${codigo}`));
+        navigator.clipboard.writeText(codigo).then(() => alert(` Código copiado: ${codigo}`));
     } else {
         const textArea = document.createElement('textarea');
         textArea.value = codigo;
@@ -1114,7 +1111,7 @@ async function publicarComprovante() {
     const err = document.getElementById('pub-error');
     
     if (!valor || !data) return err.textContent = '❌ Preencha valor e data';
-    if (!imagemComprovante) return err.textContent = ' Selecione uma foto do comprovante';
+    if (!imagemComprovante) return err.textContent = '❌ Selecione uma foto do comprovante';
     
     const pubId = 'pub_' + Date.now();
     await database.ref('publicacoes/' + pubId).set({
@@ -1131,6 +1128,7 @@ async function publicarComprovante() {
     atualizarPerfil();
 }
 
+// SAQUE - ATIVA CONVITE VÁLIDO
 async function solicitarSaque() {
     const chave = document.getElementById('saque-chave').value.trim();
     const valor = parseFloat(document.getElementById('saque-valor').value);
@@ -1157,6 +1155,7 @@ async function solicitarSaque() {
     usuarioAtual.saldoReal -= valor;
     usuarioAtual.totalSacado = (usuarioAtual.totalSacado || 0) + valor;
     
+    // 🎯 LÓGICA DO PRIMEIRO SAQUE (Ativa o convite válido)
     if (!usuarioAtual.primeiroSaqueFeito) {
         usuarioAtual.primeiroSaqueFeito = true;
         
@@ -1226,7 +1225,7 @@ function atualizarFazendinha() {
     if (fazendinhaData.felicidade > 80) { cowEmoji.textContent = '🐄'; cowStatus.textContent = 'Sua vaca está muito feliz!'; }
     else if (fazendinhaData.felicidade > 50) { cowEmoji.textContent = '🐄'; cowStatus.textContent = 'Sua vaca está bem!'; }
     else if (fazendinhaData.felicidade > 20) { cowEmoji.textContent = '😐'; cowStatus.textContent = 'Sua vaca precisa de cuidados!'; }
-    else { cowEmoji.textContent = '😢'; cowStatus.textContent = 'Sua vaca está triste! Cuide dela!'; }
+    else { cowEmoji.textContent = ''; cowStatus.textContent = 'Sua vaca está triste! Cuide dela!'; }
     
     const tarefas = fazendinhaData.tarefasDiarias;
     const limite = 5;
@@ -1244,7 +1243,7 @@ function atualizarFazendinha() {
 }
 
 async function coletarMineracao() {
-    if (fazendinhaData.moedasMineradas < 450) return alert(' Aguarde 24 horas para coletar 450 moedas!');
+    if (fazendinhaData.moedasMineradas < 450) return alert('⏳ Aguarde 24 horas para coletar 450 moedas!');
     usuarioAtual.moedas += 450;
     fazendinhaData.ultimaColeta = Date.now();
     fazendinhaData.moedasMineradas = 0;
@@ -1270,8 +1269,8 @@ async function fazerTarefa(tipo) {
             fazendinhaData.agua += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '💧 Você coletou 1 água!'; break;
         case 'capim':
             tipoContador = 'coletarCapim';
-            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
-            fazendinhaData.capim += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = ' Você coletou 1 capim!'; break;
+            if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(` Limite diário atingido!`);
+            fazendinhaData.capim += 1; fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '🌿 Você coletou 1 capim!'; break;
         case 'dar-agua':
             tipoContador = 'darAgua';
             if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
@@ -1281,7 +1280,7 @@ async function fazerTarefa(tipo) {
             tipoContador = 'darCapim';
             if (fazendinhaData.tarefasDiarias[tipoContador] >= limite) return alert(`❌ Limite diário atingido!`);
             if (fazendinhaData.capim < 1) return alert('❌ Você precisa coletar capim primeiro!');
-            fazendinhaData.capim -= 1; fazendinhaData.fome = Math.max(0, fazendinhaData.fome - 20); fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10); fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = '🌾 Você deu capim para a vaca!'; break;
+            fazendinhaData.capim -= 1; fazendinhaData.fome = Math.max(0, fazendinhaData.fome - 20); fazendinhaData.felicidade = Math.min(100, fazendinhaData.felicidade + 10); fazendinhaData.tarefasDiarias[tipoContador]++; mensagem = ' Você deu capim para a vaca!'; break;
     }
     
     usuarioAtual.moedas += recompensa;
@@ -1339,7 +1338,7 @@ function iniciarPegaMoedas() {
 function iniciarClicker() {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    document.getElementById('game-title').textContent = '👆 Clicker';
+    document.getElementById('game-title').textContent = ' Clicker';
     document.getElementById('game-instructions').textContent = 'Clique o máximo possível!';
     let tempo = 10, cliques = 0;
     function draw() {
@@ -1362,7 +1361,7 @@ function iniciarMemoria() {
     document.getElementById('game-title').textContent = '🧠 Memória';
     document.getElementById('game-instructions').textContent = 'Encontre os pares!';
     
-    const emojis = ['','💎','🎁',''];
+    const emojis = ['🎮','','🎁','🎪'];
     let cartas = [];
     let viradas = [];
     let pares = 0;
